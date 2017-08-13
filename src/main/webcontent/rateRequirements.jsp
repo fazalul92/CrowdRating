@@ -2,15 +2,19 @@
 <%@ page import="edu.rit.se.creativecrowd.DBProcess"%>
 <%
    DBProcess dbProc = new DBProcess();
-	/* ResultSet rs = dbProc.getTestCasesByGroupId(session.getAttribute("groupid").toString()); */
- 	ResultSet rs = dbProc.getTestCasesByGroupId("40");
+	ResultSet rs = dbProc.getTestCasesByGroupId(session.getAttribute("groupid").toString());
+ 	/* ResultSet rs = dbProc.getTestCasesByGroupId("40"); */
  	int i = 1;
  	String rid = request.getParameter("id");
- 	ResultSet rs1 = dbProc.getRequirementByGroupId("40");
-  	/* ResultSet rs1 = dbProc.getRequirementByGroupId(session.getAttribute("groupid").toString()); */
+ 	/* ResultSet rs1 = dbProc.getRequirementByGroupId("40"); */
+  	ResultSet rs1 = dbProc.getRequirementByGroupId(session.getAttribute("groupid").toString());
   	rs1.next();
   	
 	ResultSet rs2 = null;
+	
+	String[] GenericQuestions = {"For most questions on this page, how many phrases are in each group:", "Six", "Four", "How many days does August have:", "Thirty One", "Thirty", "Where is 2016 Olympic games held:", "Toronto, Canada", "Rio, Brazil", "Which planet is closest to the Sun:", "Mercury", "Jupiter"};
+	int gencount = 0;
+	int counter = 1;
  %>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +31,7 @@
 				<div class="">
 					<div class="page-title">
 						<div class="title_left">
-							<h3>Test Scenarios</h3>
+							<h3></h3>
 						</div>
 
 					</div>
@@ -35,7 +39,7 @@
 					<div class="col-md-12 col-sm-12 col-xs-12">
 						<div class="x_panel">
 							<div class="x_title">
-								<h2>Requirement</h2>
+								<h2>High Level Use Case</h2>
 								<div class="clearfix"></div>
 							</div>
 							<div class="x_content">
@@ -43,35 +47,89 @@
 							</div>
 						</div>
 					</div>
+					
+				<form class="form-horizontal form-label-left" method="post"
+					id="rateRequirements" action="exec/rateRequirements.jsp">
 					<% while(rs.next()) { 
 						rs2 = dbProc.getQuestions("requirement_questions");
-					%>
-					<div class="col-md-12 col-sm-12 col-xs-12">
+					 	if( counter==5 || counter==10 || counter==15 || counter==20 ) {%>
+								
+								
+								<div class="col-md-12 col-sm-12 col-xs-12">
 						<div class="x_panel">
 							<div class="x_title">
 								<h2>
-									Testcase
+									Question
 									<%= i++ %><small></small>
 								</h2>
 								<div class="clearfix"></div>
 							</div>
 							<div class="x_content">
-								<b>Stimulus</b><br />
-								<%= rs.getString("stimuli") %>
-							</div>
-							<div class="x_content">
-								<b>Context</b><br />
-								<%= rs.getString("context") %>
-							</div>
-							<div class="x_content">
-								<b>Behavior</b><br />
-								<%= rs.getString("behavior") %>
+										<b></b></td><td><%= GenericQuestions[gencount*3] %>
 							</div>
 							<div class="x_content">
 									<br />
 
-									<form class="form-horizontal form-label-left" method="post"
-										id="postsurvey" action="exec/postsurvey.jsp">
+										<table class="table" style="border: 0px;">
+											<tbody>
+												<tr>
+													<th scope="row" style="width:10%;"><label class=""
+														for="RatingGeneric<%= gencount %>">Answer
+															<span class="required">
+														</span></label></th>
+													<td>
+														
+														<div style="width: 20%; float: left;">
+															<input type="radio" name="RatingGeneric<%= gencount+1 %>"
+																value="1"> <%= GenericQuestions[gencount*3+1]  %>
+														</div> 
+													</td>
+													<td>
+														
+														<div style="width: 20%; float: left;">
+															<input type="radio" name="RatingGeneric<%= gencount+1 %>"
+																value="2"> <%= GenericQuestions[gencount*3+2]  %>
+														</div> 
+													</td>
+												</tr>
+
+											</tbody>
+										</table>
+									
+
+								</div>
+						</div>
+					</div>
+					<% 		
+						counter++;
+						gencount++;	                        
+							                        
+					 } %>
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<div class="x_panel">
+							<div class="x_title">
+								<h2>
+									Requirement
+									<%= i++ %><small></small>
+								</h2>
+								<div class="clearfix"></div>
+							</div>
+							<div class="x_content">
+								<table style="width:100%;">
+									<tr>
+										<td style="width:10%;"><b>Stimulus</b></td><td><%= rs.getString("stimuli") %></td>
+									</tr>
+									<tr>
+										<td style="width:10%;"><b>Context</b></td><td><%= rs.getString("context") %></td>
+									</tr>
+									<tr>
+										<td style="width:10%;"><b>Behavior</b></td><td><%= rs.getString("behavior") %></td>
+									</tr>
+								</table>
+							</div>
+							<div class="x_content">
+									<br />
+
 										<table class="table" style="border: 0px;">
 											<tbody>
 												<%
@@ -112,10 +170,10 @@
 															<% } %>
 													</select></td>
 													<% } else if (rs2.getString("question_type").equals("multiple_choice_radio")) { 
-	                    		String answers = rs2.getString("answer_choices");
-	                    		String[] choices = answers.split("\\|");
+	                    										String answers = rs2.getString("answer_choices");
+	                    										String[] choices = answers.split("\\|");
 	                    	%>
-													<th scope="row"><label class=""
+													<th scope="row" style="width:10%;"><label class=""
 														for="<%= rs2.getInt("id") %>"><%= rs2.getString("description") %>
 															<span class="required"> <% if(rs2.getInt("required")==1){ out.println("*"); } %>
 														</span></label></th>
@@ -123,7 +181,7 @@
 														<% for (int k = 0; k < choices.length; k++) { %>
 														<div style="width: 20%; float: left;">
 															<input type="radio" name="<%= rs.getInt("id") %>.<%= rs2.getInt("id") %>"
-																value="<%= choices[k] %>"
+																value="<%= k+1 %>"
 																<% if(rs2.getInt("required")==1){ out.println("required"); } %>>
 															<%= choices[k] %>
 														</div> <% } %>
@@ -141,7 +199,7 @@
 
 											</tbody>
 										</table>
-									</form>
+									
 
 
 
@@ -149,11 +207,14 @@
 						</div>
 					</div>
 					<!-- End Panel -->
-					<% } %>
+					<% 
+					counter++;
+					} 
+					%>
 					<div class="col-md-12 col-sm-12 col-xs-12">
 						<div class="x_panel">
 								
-								<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-11">
+								<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-10">
 											<button class="btn btn-primary">Cancel</button>
 											<button id="subm" class="btn btn-success">Submit</button>
 										</div>
@@ -161,7 +222,7 @@
 								<div class="clearfix"></div>
 						</div>
 					</div>
-
+					</form>
 
 				</div>
 

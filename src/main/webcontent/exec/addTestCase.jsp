@@ -3,16 +3,22 @@
   String rid = request.getParameter("requirementID");
   String uid = session.getAttribute("userid").toString();
   String gid = session.getAttribute("groupid").toString();
-  String cont = request.getParameter("context");
-  String stim = request.getParameter("stimuli");
-  String behv = request.getParameter("behavior");
+  String context1 = request.getParameter("context1");
+  String stimulus1 = request.getParameter("stimuli1");
+  String behavior1 = request.getParameter("behavior1");
+  String context2 = request.getParameter("context2");
+  String stimulus2 = request.getParameter("stimuli2");
+  String behavior2 = request.getParameter("behavior2");
   DBProcess dbProc = new DBProcess();
-  int ret = dbProc.addTestCase(rid, uid, gid, cont, stim, behv);
-  dbProc.addNotification("testcase", rid, gid, session.getAttribute("name").toString());
-  dbProc.disConnect();
-  if (ret == 1) {
-    response.sendRedirect("../viewTestCases.jsp?id="+rid);
+  int ret = dbProc.addTestCase(rid, uid, gid, context1, stimulus1, behavior1);
+  ret += dbProc.addTestCase(rid, uid, gid, context2, stimulus2, behavior2);
+  if (ret > 1) {
+		String[] StateInfo = dbProc.updateState(uid, session.getAttribute("state").toString());
+		session.setAttribute("state", StateInfo[0]);
+		dbProc.disConnect();
+		response.sendRedirect("../" + StateInfo[1]);
   } else {
-    response.sendRedirect("../addTestCase.jsp?id=" + rid + "&error=2");
+	dbProc.disConnect();
+    response.sendRedirect("../addTestCase.jsp");
   }
 %>

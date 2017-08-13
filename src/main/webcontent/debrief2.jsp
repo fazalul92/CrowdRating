@@ -208,7 +208,7 @@ h3 {
 								</p>
 
 							</div>
-							<a href="addTestCase.jsp">
+							<a href="rateRequirements.jsp">
 								<button type="button" class="btn btn-success">I
 									Understand, Continue</button>
 							</a>

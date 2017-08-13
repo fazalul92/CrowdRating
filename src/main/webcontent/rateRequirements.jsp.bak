@@ -11,10 +11,6 @@
   	rs1.next();
   	
 	ResultSet rs2 = null;
-	
-	String[] Generic = {"For most questions on this page, how many phrases are in each group:", "Six", "Four", "How many days does August have:", "Thirty One", "Thirty", "Where is 2016 Olympic games held:", "Toronto, Canada", "Rio, Brazil", "Which planet is closest to the Sun:", "Mercury", "Jupiter"};
-	int gencount = 0;
-	int counter = 1;
  %>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +27,7 @@
 				<div class="">
 					<div class="page-title">
 						<div class="title_left">
-							<h3></h3>
+							<h3>Test Scenarios</h3>
 						</div>
 
 					</div>
@@ -39,7 +35,7 @@
 					<div class="col-md-12 col-sm-12 col-xs-12">
 						<div class="x_panel">
 							<div class="x_title">
-								<h2>High Level Use Case</h2>
+								<h2>Requirement</h2>
 								<div class="clearfix"></div>
 							</div>
 							<div class="x_content">
@@ -54,23 +50,22 @@
 						<div class="x_panel">
 							<div class="x_title">
 								<h2>
-									Requirement
+									Testcase
 									<%= i++ %><small></small>
 								</h2>
 								<div class="clearfix"></div>
 							</div>
 							<div class="x_content">
-								<table style="width:100%;">
-									<tr>
-										<td style="width:10%;"><b>Stimulus</b></td><td><%= rs.getString("stimuli") %></td>
-									</tr>
-									<tr>
-										<td style="width:10%;"><b>Context</b></td><td><%= rs.getString("context") %></td>
-									</tr>
-									<tr>
-										<td style="width:10%;"><b>Behavior</b></td><td><%= rs.getString("behavior") %></td>
-									</tr>
-								</table>
+								<b>Stimulus</b><br />
+								<%= rs.getString("stimuli") %>
+							</div>
+							<div class="x_content">
+								<b>Context</b><br />
+								<%= rs.getString("context") %>
+							</div>
+							<div class="x_content">
+								<b>Behavior</b><br />
+								<%= rs.getString("behavior") %>
 							</div>
 							<div class="x_content">
 									<br />
@@ -120,7 +115,7 @@
 	                    		String answers = rs2.getString("answer_choices");
 	                    		String[] choices = answers.split("\\|");
 	                    	%>
-													<th scope="row" style="width:10%;"><label class=""
+													<th scope="row"><label class=""
 														for="<%= rs2.getInt("id") %>"><%= rs2.getString("description") %>
 															<span class="required"> <% if(rs2.getInt("required")==1){ out.println("*"); } %>
 														</span></label></th>

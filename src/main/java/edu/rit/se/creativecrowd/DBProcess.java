@@ -193,21 +193,27 @@ public class DBProcess {
 				 * (rs.getString("generic_name").equals("creativegeneric3") &&
 				 * rs.getInt("choice_no") > 3) TrueCount += 1;
 				 */
-				if (rs.getString("generic_name").equals("discgeneric1")
-						|| rs.getString("generic_name").equals("discgeneric3"))
+				if (rs.getString("generic_name").equals("RatingGeneric1")
+						|| rs.getString("generic_name").equals("RatingGeneric3"))
 					TrueCount += (rs.getInt("choice_no") == 2) ? 1 : 0;
-				else if (rs.getString("generic_name").equals("discgeneric2")
-						|| rs.getString("generic_name").equals("discgeneric4"))
+				else if (rs.getString("generic_name").equals("RatingGeneric2")
+						|| rs.getString("generic_name").equals("RatingGeneric4"))
 					TrueCount += (rs.getInt("choice_no") == 1) ? 1 : 0;
-				else if (rs.getString("generic_name").equals("personageneric1") && rs.getInt("choice_no") < 3)
-					TrueCount += 1;
-				else if (rs.getString("generic_name").equals("personageneric2") && rs.getInt("choice_no") > 3)
-					TrueCount += 1;
+//				if (rs.getString("generic_name").equals("discgeneric1")
+//						|| rs.getString("generic_name").equals("discgeneric3"))
+//					TrueCount += (rs.getInt("choice_no") == 2) ? 1 : 0;
+//				else if (rs.getString("generic_name").equals("discgeneric2")
+//						|| rs.getString("generic_name").equals("discgeneric4"))
+//					TrueCount += (rs.getInt("choice_no") == 1) ? 1 : 0;
+//				else if (rs.getString("generic_name").equals("personageneric1") && rs.getInt("choice_no") < 3)
+//					TrueCount += 1;
+//				else if (rs.getString("generic_name").equals("personageneric2") && rs.getInt("choice_no") > 3)
+//					TrueCount += 1;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (TrueCount > 4)
+		if (TrueCount > 3)
 			return true;
 		else
 			return false;
@@ -238,40 +244,28 @@ public class DBProcess {
 		int count = 0;
 		ResultSet rs = null;
 		try {
-			Statement st = mConn.createStatement();
-			rs = st.executeQuery("SELECT personality from users where id="+uid);
-			rs.next();
-			String userPersonality = rs.getString("personality");
 			Statement st1 = mConn.createStatement();
-			if (checkAttention(uid)) {
-				rs = st.executeQuery("select * from usergroups where status<3 order by status desc, filled desc");
-				boolean rowFound = false;
-				while(rs.next() && !rowFound){
-					int i;
-					for(i=1;i<5 && !rowFound;i++){
-						if(rs.getString("uid"+i)!=null || !(rs.getString("upersona"+i).contains(userPersonality) || rs.getString("upersona"+i).contains("A"))) {
-							continue;
-						}
-						else {
-							rowFound = true;
-							int nullCount = 0;
-							for(int j=1;j<5;j++){
-								if(rs.getString("uid"+j)==null)
-									nullCount++;
-							}
-							nullCount--;
-							int filled = 4 - nullCount;
-							int status = (nullCount==0) ? 3 : 2;
-							count = st1.executeUpdate("UPDATE usergroups SET uid" + i + " = " + uid + ", status = "+status+", filled = "+filled+" WHERE gid=" + rs.getInt("gid"));
-							count += st1.executeUpdate("UPDATE users SET gid = "+rs.getInt("gid")+", group_type = "+rs.getInt("type")+", name = 'Participant "+i+"' WHERE id = "+uid);
-						}
-					}
+//			if (checkAttention(uid)) {
+			Statement st = mConn.createStatement();
+			rs = st.executeQuery("SELECT * FROM groups ORDER BY 'filled' ASC LIMIT 1;");
+			rs.next();
+			int filled = rs.getInt("filled");
+			boolean positionFound = false;
+			for(int i=1;i<4 && !positionFound;i++) {
+				if(rs.getString("uid"+i)==null) {
+					filled+=1;
+					positionFound = true;
+					count = st1.executeUpdate("UPDATE groups SET uid" + i + " = " + uid + ", filled = "+filled+" WHERE id=" + rs.getInt("id"));
+					count += st1.executeUpdate("UPDATE users SET gid = "+rs.getInt("id")+", name = 'Participant "+i+"' WHERE id = "+uid);
+					break;
 				}
-				if(!rowFound)
-					System.out.print("Cannot be assigned");
-			} else {
-				st1.executeUpdate("UPDATE users SET gid = -1, group_type = 1, name='Participant' WHERE id=" + uid);
 			}
+			
+			if(!positionFound)
+				System.out.print("Cannot be assigned");
+//			} else {
+//				st1.executeUpdate("UPDATE users SET gid = -1, name='Participant' WHERE id=" + uid);
+//			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -306,7 +300,7 @@ public class DBProcess {
 		ResultSet rs = null;
 		try {
 			Statement st = mConn.createStatement();
-			rs = st.executeQuery("SELECT COUNT(*) as nos FROM testcases where uid=" + uid);
+			rs = st.executeQuery("SELECT COUNT(*) as nos FROM testcases_new where uid=" + uid);
 			rs.next();
 			return rs.getInt("nos");
 		} catch (SQLException e) {
@@ -454,6 +448,24 @@ public class DBProcess {
 			PreparedStatement statement = mConn.prepareStatement(
 					"INSERT INTO `discpersonality_responses`(`user_id`, `group_no`, `item_no`, `response`, `created_at`) VALUES ('"
 							+ uid + "','" + gid + "','" + iid + "','" + val + "','" + dtime + "')");
+			count += statement.executeUpdate();
+			statement.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return count;
+
+	}
+
+	public int ratingResponseData(String uid, String gid, String tid, String rid, String val)
+			throws ClassNotFoundException, IOException, SQLException {
+		int count = 0;
+		String dtime = currentDateTIme();
+		try {
+			PreparedStatement statement = mConn.prepareStatement(
+					"INSERT INTO `ratings_responses`(`user_id`, `group_no`, `testcase_no`, `rating_no`, `response`, `created_at`) VALUES ('"
+							+ uid + "','" + gid + "','" + tid + "','" + rid + "','" + val + "','" + dtime + "')");
 			count += statement.executeUpdate();
 			statement.close();
 
@@ -709,7 +721,7 @@ public class DBProcess {
 		String dtime = currentDateTIme();
 		try {
 			PreparedStatement statement = mConn.prepareStatement(
-					"INSERT INTO `testcases` (`rid`, `uid`, `gid`, `context`, `stimuli`, `behavior`, `created_at`) VALUES ("
+					"INSERT INTO `testcases_new` (`rid`, `uid`, `gid`, `context`, `stimuli`, `behavior`, `created_at`) VALUES ("
 							+ rid + "," + uid + "," + gid + ",?,?,?,'" + dtime + "')");
 			statement.setString(1, cont);
 			statement.setString(2, stim);

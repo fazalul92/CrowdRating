@@ -29,7 +29,24 @@ CREATE TABLE `generic_responses` (
   `choice_no` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `groups`
+--
+
+DROP TABLE IF EXISTS `groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid1` int(11) DEFAULT NULL,
+  `uid2` int(11) DEFAULT NULL,
+  `uid3` int(11) DEFAULT NULL,
+  `filled` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +62,7 @@ CREATE TABLE `logs` (
   `message` varchar(25) NOT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +97,7 @@ CREATE TABLE `postsurvey_questions` (
   `answer_choices` varchar(255) DEFAULT NULL,
   `required` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,7 +114,7 @@ CREATE TABLE `postsurvey_responses` (
   `description` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -114,7 +131,7 @@ CREATE TABLE `presurvey_questions` (
   `answer_choices` varchar(255) DEFAULT NULL,
   `required` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,7 +148,56 @@ CREATE TABLE `presurvey_responses` (
   `description` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `ratings_responses`
+--
+
+DROP TABLE IF EXISTS `ratings_responses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ratings_responses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `group_no` int(11) NOT NULL,
+  `testcase_no` int(11) NOT NULL,
+  `rating_no` int(11) NOT NULL,
+  `response` varchar(10) NOT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `requirement_questions`
+--
+
+DROP TABLE IF EXISTS `requirement_questions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `requirement_questions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) DEFAULT NULL,
+  `question_type` varchar(50) DEFAULT NULL,
+  `answer_choices` varchar(255) DEFAULT NULL,
+  `required` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `requirements`
+--
+
+DROP TABLE IF EXISTS `requirements`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `requirements` (
+  `id` int(11) DEFAULT NULL,
+  `description` text
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,7 +214,7 @@ CREATE TABLE `statuses` (
   `filename` varchar(20) NOT NULL,
   `next_seq` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,6 +227,24 @@ DROP TABLE IF EXISTS `testcases`;
 CREATE TABLE `testcases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `rid` int(11) NOT NULL,
+  `gid` int(11) NOT NULL,
+  `context` varchar(500) NOT NULL,
+  `stimuli` varchar(500) NOT NULL,
+  `behavior` varchar(500) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1920 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `testcases_new`
+--
+
+DROP TABLE IF EXISTS `testcases_new`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `testcases_new` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `rid` int(11) NOT NULL,
   `uid` int(11) NOT NULL,
   `gid` int(11) NOT NULL,
   `context` varchar(500) NOT NULL,
@@ -169,7 +253,7 @@ CREATE TABLE `testcases` (
   `created_at` datetime NOT NULL,
   `published` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,7 +275,7 @@ CREATE TABLE `users` (
   `state` int(11) NOT NULL DEFAULT '1' COMMENT '0 = new user, 1 = presurvey, 2 = personality, 3 = creativity, 10 = prereqs completed.',
   `completion_code` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -203,4 +287,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-09 13:48:24
+-- Dump completed on 2017-08-13 18:19:54
