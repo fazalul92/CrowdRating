@@ -12,7 +12,7 @@
   	
 	ResultSet rs2 = null;
 	
-	String[] GenericQuestions = {"For most questions on this page, how many phrases are in each group:", "Six", "Four", "How many days does August have:", "Thirty One", "Thirty", "Where is 2016 Olympic games held:", "Toronto, Canada", "Rio, Brazil", "Which planet is closest to the Sun:", "Mercury", "Jupiter"};
+	String[] GenericQuestions = {"Which animal is larger -  an elephant or a horse:", "Horse", "Elephant", "How many days does a week have:", "Seven", "Eight", "Which country can be found North of United States:", "Argentina", "Canada", "Which is the largest planet in the solar system:", "Jupiter", "Mars"};
 	int gencount = 0;
 	int counter = 1;
  %>
@@ -52,7 +52,7 @@
 					id="rateRequirements" action="exec/rateRequirements.jsp">
 					<% while(rs.next()) { 
 						rs2 = dbProc.getQuestions("requirement_questions");
-					 	if( counter==5 || counter==10 || counter==15 || counter==20 ) {%>
+					 	if( counter==4 || counter==10 || counter==17 || counter==20 ) {%>
 								
 								
 								<div class="col-md-12 col-sm-12 col-xs-12">

@@ -1,6 +1,5 @@
 <%@page import="edu.rit.se.creativecrowd.DBProcess"%>
 <%@ page import ="java.sql.ResultSet" %>
-        <%@page import="edu.rit.se.creativecrowd.DBProcess"%>
 <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
@@ -29,10 +28,7 @@
                   	<li><a href="<%= rsm.getString("filename") %>"><i class="fa fa-bar-chart-o"></i> <%= rsm.getString("title") %> <span class="fa fa-chevron-down"></span></a>
                   </li>
                   <% } %>
-                  <% if(Integer.parseInt(session.getAttribute("group_type").toString())==3 && Integer.parseInt(session.getAttribute("state").toString())>4) { %>
-                  <li><a href="discussions.jsp"><i class="fa fa-users"></i> Discussions <span class="fa fa-chevron-down"></span></a>
-                  </li>  
-                  <% } %>
+                  
                   <% if(Integer.parseInt(session.getAttribute("completion").toString())==1) { %>
                   <li><a href="completion.jsp"><i class="fa fa-external-link"></i> Get Completion Code <span class="fa fa-chevron-down"></span></a>
                   </li>  
@@ -61,45 +57,6 @@
 	                  </a>
                 
                 </li>
-                
-                <%  if(Integer.parseInt(session.getAttribute("group_type").toString()) > 1) {%>
-                <li role="presentation" class="dropdown" style="float:left;">
-                	
-                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green" id="NotificationCount">0</span>
-                  </a>
-                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                    <% while(Notifications.next()) { %>
-	                    <li>
-	                      <a href="<%= Notifications.getString("link") %>">
-	                        <span>
-	                          <span></span>
-	                          <span class="time"><%= Notifications.getString("created_at") %></span>
-	                        </span>
-	                        <span class="message" style="margin-top:15px;">
-	                          <%= Notifications.getString("content") %>
-	                        </span>
-	                      </a>
-	                    </li>
-                    <% 
-                    	notificationCount++;
-                    } %>
-                    <!-- <li>
-                      <div class="text-center">
-                        <a href="notifications.jsp">
-                          <strong>See All Alerts</strong>
-                          <i class="fa fa-angle-right"></i>
-                        </a>
-                      </div>
-                    </li> -->
-                  </ul>
-                </li>
-                
-				<li role="presentation" style="float:left;color: #2a3f54;margin-top: 18px;font-weight: bold;font-size: medium;">
-                	Group Updates
-                </li>
-                <% } %>
                 <li style="color: #2a3f54;margin-top: 18px;font-weight: bold;font-size: medium;">
                 	<%= session.getAttribute("name").toString() %>
                 </li>

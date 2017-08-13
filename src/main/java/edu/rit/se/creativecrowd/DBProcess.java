@@ -133,6 +133,22 @@ public class DBProcess {
 		return 0;
 	}
 
+	public boolean checkIfOldUser(String mturk) throws ClassNotFoundException, IOException, SQLException {
+		try {
+			Statement st = mConn.createStatement();
+			ResultSet rs;
+			rs = st.executeQuery("select * from blacklisted_users where mturk_id='" + mturk + "'");
+			if (rs.next()) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public int addLog(int uid, String message) {
 		int ret = 0;
 		String dtime = currentDateTIme();
@@ -193,59 +209,60 @@ public class DBProcess {
 				 * (rs.getString("generic_name").equals("creativegeneric3") &&
 				 * rs.getInt("choice_no") > 3) TrueCount += 1;
 				 */
+				/*if (rs.getString("generic_name").equals("discgeneric1")
+				|| rs.getString("generic_name").equals("discgeneric3"))
+					TrueCount += (rs.getInt("choice_no") == 2) ? 1 : 0;
+				else if (rs.getString("generic_name").equals("discgeneric2")
+				|| rs.getString("generic_name").equals("discgeneric4"))
+					TrueCount += (rs.getInt("choice_no") == 1) ? 1 : 0;*/
 				if (rs.getString("generic_name").equals("RatingGeneric1")
 						|| rs.getString("generic_name").equals("RatingGeneric3"))
 					TrueCount += (rs.getInt("choice_no") == 2) ? 1 : 0;
 				else if (rs.getString("generic_name").equals("RatingGeneric2")
 						|| rs.getString("generic_name").equals("RatingGeneric4"))
 					TrueCount += (rs.getInt("choice_no") == 1) ? 1 : 0;
-//				if (rs.getString("generic_name").equals("discgeneric1")
-//						|| rs.getString("generic_name").equals("discgeneric3"))
-//					TrueCount += (rs.getInt("choice_no") == 2) ? 1 : 0;
-//				else if (rs.getString("generic_name").equals("discgeneric2")
-//						|| rs.getString("generic_name").equals("discgeneric4"))
-//					TrueCount += (rs.getInt("choice_no") == 1) ? 1 : 0;
-//				else if (rs.getString("generic_name").equals("personageneric1") && rs.getInt("choice_no") < 3)
-//					TrueCount += 1;
-//				else if (rs.getString("generic_name").equals("personageneric2") && rs.getInt("choice_no") > 3)
-//					TrueCount += 1;
+				else if (rs.getString("generic_name").equals("personageneric1") && rs.getInt("choice_no") < 3)
+					TrueCount += 1;
+				else if (rs.getString("generic_name").equals("personageneric2") && rs.getInt("choice_no") > 3)
+					TrueCount += 1;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (TrueCount > 3)
+		if (TrueCount > 4)
 			return true;
-		else
+		else {
+			try {
+				Statement st1 = mConn.createStatement();
+				st1.executeUpdate("UPDATE `testcases_new` SET `published` = 0 WHERE `uid` = "+ uid + ";");
+				st1.executeUpdate("UPDATE `users` SET `attention_check` = 0 WHERE id=" + uid + ";");
+				/* Remove user from group */
+				ResultSet rs = st1.executeQuery("SELECT * FROM groups WHERE uid1 = " + uid + " OR  uid2 = " + uid + " OR uid3 = " + uid + ";");
+				boolean found=false;
+				int i=1;
+				String pos="";
+				for(;;i++) {
+					pos = "uid"+Integer.toString(i);
+					if(rs.getString(pos).equals(uid)) {
+						found=true;
+						break;
+					}
+				}
+				int filled = rs.getInt("filled");
+				filled-=1;
+				st1.executeUpdate("UPDATE `groups` SET `"+pos+"` = null, `filled` = "+ filled +" WHERE `id` = "+ rs.getInt("id") + ";");
+			} catch(SQLException e) {
+				e.printStackTrace();
+			}
 			return false;
+		}
 	}
-
-	/*
-	 * public int assignTeamOld(String uid) throws IOException, SQLException,
-	 * ClassNotFoundException { int count = 0; int groupSize = 4; ResultSet rs =
-	 * null; try { Statement st = mConn.createStatement(); Statement st1 =
-	 * mConn.createStatement(); if (checkAttention(uid)) { rs =
-	 * st.executeQuery("select * from usergroups where status=2 order by gid");
-	 * rs.next(); int gid = rs.getInt("gid"); int i = 1; for (i = 1;
-	 * rs.getString("uid" + i) != null && i < (groupSize + 1); i++) ; String
-	 * name = "Participant " + i; String uidn = "uid" + i; if (i < groupSize) {
-	 * count = st1.executeUpdate("UPDATE usergroups SET " + uidn + " = " + uid +
-	 * " WHERE gid=" + gid); } else { count = st1.executeUpdate(
-	 * "UPDATE usergroups SET " + uidn + " = " + uid + ", status = 3 WHERE gid="
-	 * + gid); st1.executeUpdate("UPDATE usergroups SET status = 2 WHERE gid=" +
-	 * (gid + 1)); } st1.executeUpdate("UPDATE users SET gid = " + gid +
-	 * ", group_type = " + rs.getInt("type") + ", name='" + name + "' WHERE id="
-	 * + uid); } else { st1.
-	 * executeUpdate("UPDATE users SET gid = -1, group_type = 1, name='Participant' WHERE id="
-	 * + uid); } } catch (SQLException e) { e.printStackTrace(); } return count;
-	 * }
-	 */	 
 
 	public int assignTeam(String uid) throws IOException, SQLException, ClassNotFoundException {
 		int count = 0;
 		ResultSet rs = null;
 		try {
 			Statement st1 = mConn.createStatement();
-//			if (checkAttention(uid)) {
 			Statement st = mConn.createStatement();
 			rs = st.executeQuery("SELECT * FROM groups ORDER BY 'filled' ASC LIMIT 1;");
 			rs.next();
@@ -263,9 +280,6 @@ public class DBProcess {
 			/**/
 			if(!positionFound)
 				System.out.print("Cannot be assigned");
-//			} else {
-//				st1.executeUpdate("UPDATE users SET gid = -1, name='Participant' WHERE id=" + uid);
-//			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -314,7 +328,7 @@ public class DBProcess {
 		int count = 0;
 		try {
 			//String[] tables = { "presurvey_responses", "personality_responses", "discpersonality_responses" };
-			String[] tables = { "presurvey_responses" };
+			String[] tables = { "presurvey_responses", "personality_responses" };
 			Statement st = mConn.createStatement();
 			for (int i = 0; i < tables.length; i++) {
 				rs = st.executeQuery("SELECT COUNT(*) as nos FROM " + tables[i] + " where user_id=" + uid);

@@ -3,8 +3,11 @@
 <%
 	String mturk = request.getParameter("mturk");
 	DBProcess dbProc = new DBProcess();
-	int ret = dbProc.loginUser(mturk);
 	try {
+	if(dbProc.checkIfOldUser(mturk)){
+		response.sendRedirect("../denied.jsp");
+	} else {
+	int ret = dbProc.loginUser(mturk);
 		if (ret == 0) {
 			ret = dbProc.registerUser(mturk);
 		}
@@ -15,7 +18,6 @@
 			ResultSet rs = dbProc.getUser(Integer.toString(ret));
 			rs.next();
 			session.setAttribute("userid", ret);
-			session.setAttribute("group_type", rs.getInt("group_type"));
 			session.setAttribute("name", rs.getString("name"));
 			session.setAttribute("state", rs.getInt("state"));
 			session.setAttribute("groupid", rs.getString("gid"));
@@ -29,6 +31,8 @@
 			dbProc.addLog(ret,"Login");
 			response.sendRedirect("../dashboard.jsp");
 		}
+	}
+		
 	} finally {
 		dbProc.disConnect();
 	}

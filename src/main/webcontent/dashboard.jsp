@@ -126,7 +126,7 @@
 										<td>Pre-Surveys</td>
 										<td><%= dbProc.preSurveyCount(Integer.parseInt(session.getAttribute("userid").toString()))  %>
 										</td>
-										<td>1</td>
+										<td>2</td>
 									</tr>
 									<tr>
 										<td>Test Scenarios</td>

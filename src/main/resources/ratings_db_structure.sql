@@ -16,6 +16,20 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `blacklisted_users`
+--
+
+DROP TABLE IF EXISTS `blacklisted_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `blacklisted_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mturk_id` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `generic_responses`
 --
 
@@ -62,24 +76,73 @@ CREATE TABLE `logs` (
   `message` varchar(25) NOT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `notifications`
+-- Table structure for table `personality_data`
 --
 
-DROP TABLE IF EXISTS `notifications`;
+DROP TABLE IF EXISTS `personality_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `notifications` (
+CREATE TABLE `personality_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `gid` int(11) NOT NULL,
-  `link` varchar(50) NOT NULL,
-  `content` text NOT NULL,
-  `created_at` datetime NOT NULL,
+  `uid` int(11) NOT NULL,
+  `mbti_E` int(11) DEFAULT NULL,
+  `mbti_I` int(11) DEFAULT NULL,
+  `mbti_S` int(11) DEFAULT NULL,
+  `mbti_N` int(11) DEFAULT NULL,
+  `mbti_T` int(11) DEFAULT NULL,
+  `mbti_F` int(11) DEFAULT NULL,
+  `mbti_J` int(11) DEFAULT NULL,
+  `mbti_P` int(11) DEFAULT NULL,
+  `ipip_E` int(11) DEFAULT NULL,
+  `ipip_A` int(11) DEFAULT NULL,
+  `ipip_C` int(11) DEFAULT NULL,
+  `ipip_N` int(11) DEFAULT NULL,
+  `ipip_O` int(11) DEFAULT NULL,
+  `rawD` int(11) DEFAULT NULL,
+  `rawI` int(11) DEFAULT NULL,
+  `rawS` int(11) DEFAULT NULL,
+  `rawC` int(11) DEFAULT NULL,
+  `normD` float DEFAULT NULL,
+  `normI` float DEFAULT NULL,
+  `normS` float DEFAULT NULL,
+  `normC` float DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `personality_questions`
+--
+
+DROP TABLE IF EXISTS `personality_questions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `personality_questions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `personality_responses`
+--
+
+DROP TABLE IF EXISTS `personality_responses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `personality_responses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `question_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -214,7 +277,7 @@ CREATE TABLE `statuses` (
   `filename` varchar(20) NOT NULL,
   `next_seq` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -266,7 +329,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `gid` int(11) NOT NULL DEFAULT '0',
-  `group_type` int(11) NOT NULL DEFAULT '1' COMMENT '1 = nominal, 2 = non-interactive, 3 = interacting',
+  `attention_check` int(11) NOT NULL DEFAULT '1' COMMENT '1 = nominal, 2 = non-interactive, 3 = interacting',
   `mturk_id` varchar(20) NOT NULL,
   `name` varchar(50) NOT NULL,
   `created_at` datetime NOT NULL,
@@ -275,7 +338,7 @@ CREATE TABLE `users` (
   `state` int(11) NOT NULL DEFAULT '1' COMMENT '0 = new user, 1 = presurvey, 2 = personality, 3 = creativity, 10 = prereqs completed.',
   `completion_code` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -287,4 +350,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-13 18:19:54
+-- Dump completed on 2017-08-14  1:42:26
