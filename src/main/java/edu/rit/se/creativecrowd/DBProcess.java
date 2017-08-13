@@ -260,7 +260,7 @@ public class DBProcess {
 					break;
 				}
 			}
-			
+			/**/
 			if(!positionFound)
 				System.out.print("Cannot be assigned");
 //			} else {
