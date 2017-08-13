@@ -14,6 +14,7 @@
     	ret += dbProc.responseData("personality_responses", uid, parameterName, parameterValue);
     }
   }
+  dbProc.processIpip(uid);
   if (ret > 0) {
   	String[] StateInfo = dbProc.updateState(uid,session.getAttribute("state").toString());
 	session.setAttribute("state", StateInfo[0]);

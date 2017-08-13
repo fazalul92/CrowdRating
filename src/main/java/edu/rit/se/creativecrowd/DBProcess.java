@@ -509,8 +509,8 @@ public class DBProcess {
 		}
 		return count;
 	}
-
-	public int processPersonalities(String uid) throws ClassNotFoundException, IOException, SQLException {
+	
+	public int processIpip(String uid) {
 		int ret = 0;
 		int IO = 0, IC = 0, IE = 0, IA = 0, IN = 0;
 		int E = 0, I = 0, S = 0, N = 0, T = 0, F = 0, J = 0, P = 0;
@@ -559,35 +559,41 @@ public class DBProcess {
 					"INSERT INTO `personality_data`(`uid`, `ipip_E`, `ipip_A`, `ipip_C`, `ipip_N`, `ipip_O`) VALUES ('"
 							+ uid + "','" + IE + "','" + IA + "','" + IC + "','" + IN + "','" + IO + "')");
 			ret = statement.executeUpdate();
-			/*
-			 * MBTI DATA rs = st.
-			 * executeQuery("select * from mbtipersonality_responses where user_id = "
-			 * + uid); while (rs.next()) { rem = rs.getInt("group_no") % 7; val
-			 * = rs.getInt("choice_no"); switch (rem) { case 1: ret = (val == 1)
-			 * ? ++E : ++I; break; case 2: case 3: ret = (val == 1) ? ++S : ++N;
-			 * break; case 4: case 5: ret = (val == 1) ? ++T : ++F; break; case
-			 * 6: case 0: ret = (val == 1) ? ++J : ++P; break; } } String sql =
-			 * "UPDATE personality_data SET mbti_E = '" + E + "', mbti_I = '" +
-			 * I + "', mbti_S = '" + S + "', mbti_N = '" + N + "', mbti_T = '" +
-			 * T + "', mbti_F = '" + F + "', mbti_J = '" + J + "', mbti_P = '" +
-			 * P + "' WHERE uid=" + uid; ret = st.executeUpdate(sql); CREATIVITY
-			 * DATA int creativityIndex = 0; int[] positiveAttributeStr = { 0,
-			 * 2, 4, 5, 7, 9, 11, 13, 16, 18, 19, 20, 22, 24, 25, 26, 28, 29 };
-			 * boolean[] positiveAttribute = new boolean[30]; for (int
-			 * positiveIndex : positiveAttributeStr) {
-			 * positiveAttribute[positiveIndex] = true; } rs =
-			 * st.executeQuery("select * from creativity_responses where user_id
-			 * = " + uid); while (rs.next()) { creativityIndex +=
-			 * positiveAttribute[rs.getInt("question_id") - 1] ?
-			 * rs.getInt("description") : (6 - rs.getInt("description")); }
-			 * String sql = "UPDATE personality_data SET creativity = " +
-			 * creativityIndex + " WHERE uid=" + uid; ret =
-			 * st.executeUpdate(sql);
-			 */
-			ret += processDiscPersonality(uid);
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			e.printStackTrace();
 		}
+		return ret;
+	}
+
+	public int processPersonalities(String uid) throws ClassNotFoundException, IOException, SQLException {
+		int ret=0;
+		ret+= processIpip(uid);
+		/*
+		 * MBTI DATA rs = st.
+		 * executeQuery("select * from mbtipersonality_responses where user_id = "
+		 * + uid); while (rs.next()) { rem = rs.getInt("group_no") % 7; val
+		 * = rs.getInt("choice_no"); switch (rem) { case 1: ret = (val == 1)
+		 * ? ++E : ++I; break; case 2: case 3: ret = (val == 1) ? ++S : ++N;
+		 * break; case 4: case 5: ret = (val == 1) ? ++T : ++F; break; case
+		 * 6: case 0: ret = (val == 1) ? ++J : ++P; break; } } String sql =
+		 * "UPDATE personality_data SET mbti_E = '" + E + "', mbti_I = '" +
+		 * I + "', mbti_S = '" + S + "', mbti_N = '" + N + "', mbti_T = '" +
+		 * T + "', mbti_F = '" + F + "', mbti_J = '" + J + "', mbti_P = '" +
+		 * P + "' WHERE uid=" + uid; ret = st.executeUpdate(sql); CREATIVITY
+		 * DATA int creativityIndex = 0; int[] positiveAttributeStr = { 0,
+		 * 2, 4, 5, 7, 9, 11, 13, 16, 18, 19, 20, 22, 24, 25, 26, 28, 29 };
+		 * boolean[] positiveAttribute = new boolean[30]; for (int
+		 * positiveIndex : positiveAttributeStr) {
+		 * positiveAttribute[positiveIndex] = true; } rs =
+		 * st.executeQuery("select * from creativity_responses where user_id
+		 * = " + uid); while (rs.next()) { creativityIndex +=
+		 * positiveAttribute[rs.getInt("question_id") - 1] ?
+		 * rs.getInt("description") : (6 - rs.getInt("description")); }
+		 * String sql = "UPDATE personality_data SET creativity = " +
+		 * creativityIndex + " WHERE uid=" + uid; ret =
+		 * st.executeUpdate(sql);
+		 */
+		ret += processDiscPersonality(uid);
 		return ret;
 	}
 
